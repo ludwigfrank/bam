@@ -6,10 +6,9 @@ import { HERE_APP_CODE, HERE_APP_ID } from "../constants"
 const pLoc = pureLocations.slice(0, 100)
 
 const geocoderOptions = {
-    provider: 'here',
-    httpAdapter: 'http',
-    appId: HERE_APP_ID,
-    appCode: HERE_APP_CODE,
+    provider: 'google',
+    httpAdapter: 'https',
+    apiKey: 'AIzaSyD6owl91GMU8Rv7H4W2kdaM4KXV-yF9PJc',
     formatter: null,
 }
 
@@ -25,6 +24,7 @@ async function generateLocationCoordinates (locations: string[]): Promise<Array<
             address: location,
             limit: 1
         }).then(res => {
+            console.log(res)
             const loc = res[0]
             newLocations.push({
                 address: location,
@@ -46,7 +46,7 @@ async function generateLocationCoordinates (locations: string[]): Promise<Array<
 generateLocationCoordinates(pLoc).then(
     data => {
         fs.writeFileSync(
-            `./server/data/locations/saturatedLocations.json`,
+            `./server/data/generated/locations/saturatedLocations.json`,
             JSON.stringify(data, null, 2)
         )
     }
