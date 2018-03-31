@@ -1,9 +1,8 @@
 import * as Geocoder from 'node-geocoder'
 import * as fs from 'fs'
 import * as pureLocations from '../data/generated/locations/locations.json'
-import { HERE_APP_CODE, HERE_APP_ID } from "../constants"
 
-const pLoc = pureLocations.slice(0, 100)
+const pLoc = pureLocations.slice(0, 200)
 
 const geocoderOptions = {
     provider: 'google',
@@ -18,10 +17,12 @@ const geoCoder = Geocoder(geocoderOptions)
 async function generateLocationCoordinates (locations: string[]): Promise<Array<object>> {
     // Initialize array of locations with geo coordinates
     const newLocations = []
-
+    const unidentifiedLocations = []
     for (const location of locations) {
+        const [city, state, country] = location.replace(/ /g, '').split(',')
         await geoCoder.geocode({
-            address: location,
+            address: `${city} ${state}`,
+            country: country,
             limit: 1
         }).then(res => {
             console.log(res)
@@ -32,22 +33,25 @@ async function generateLocationCoordinates (locations: string[]): Promise<Array<
                 country: loc.country,
                 countryCode: loc.countryCode,
                 city: loc.city,
-                district: loc.district,
                 formattedAddress: loc.formattedAddress
             })
         }).catch(err => {
-            console.log(err)
+            unidentifiedLocations.push(`${city} ${state} ${country}`)
         })
     }
 
-    return newLocations
+    return [newLocations, unidentifiedLocations]
 }
 
 generateLocationCoordinates(pLoc).then(
     data => {
         fs.writeFileSync(
             `./server/data/generated/locations/saturatedLocations.json`,
-            JSON.stringify(data, null, 2)
+            JSON.stringify(data[0], null, 2)
+        )
+        fs.writeFileSync(
+            `./server/data/generated/locations/unidentifiedLocations.json`,
+            JSON.stringify(data[1], null, 2)
         )
     }
 )

@@ -72,3 +72,4 @@ typings/
 *.iml
 out
 gen
+/server/data/generated/locations/saturatedLocations.json

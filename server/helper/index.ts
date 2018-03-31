@@ -2,7 +2,13 @@ if (!String.prototype.bracketsIntoArray) {
     String.prototype.bracketsIntoArray = function(this: string): string[] {
         return this
             .split(/\[[0-9]+]/g)
-            .filter((val) => val)
+            .reduce((acc, cur) => {
+                if (cur !== undefined && cur !== "") {
+                    return [...acc, cur]
+                } else {
+                    return []
+                }
+            }, [])
     }
 }
 

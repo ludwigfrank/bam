@@ -7,7 +7,7 @@ import * as fs from 'fs'
 import { nameParser, dateParser, cityParser } from "./parser"
 import './helper'
 import { summarizeLocationAsString } from "./helper"
-import './helper/geocode'
+// import './helper/geocode'
 
 const generatedFilePath = './server/data/generated'
 const csvFilePath = './server/data/doctors_by_key.csv'
@@ -17,14 +17,14 @@ let index = 0
 
 // The cities contained in the database, used for geocoding
 let locations = []
+const locationsOccurence = {}
 
 // Split the parsed file in multiple Json files to not exceed editor file size limit
 const MAX_NODES_PER_FILE = 1000
 // Generate new doctor json file from csv and write to files
-const WRITE_FILES_TO_JSON = false
+const WRITE_FILES_TO_JSON = true
 // Write the cities in a separate file
-const EXTRACT_AND_WRITE_CITIES = false
-
+const EXTRACT_AND_WRITE_CITIES = true
 
 if (WRITE_FILES_TO_JSON) {
     csv({
@@ -61,8 +61,12 @@ if (WRITE_FILES_TO_JSON) {
 
                         if(locations.indexOf(location) === -1) {
                             locations.push(location)
+                        } else {
+                            locationsOccurence[location] =
+                                locationsOccurence[location]
+                                    ? locationsOccurence[location] += 1
+                                    : 1
                         }
-
                     })
                 }
             }
@@ -88,6 +92,11 @@ if (WRITE_FILES_TO_JSON) {
                 fs.writeFileSync(
                     `${generatedFilePath}/locations/locations.json`,
                     JSON.stringify(alphabeticallySortedLocations, null, 4)
+                )
+
+                fs.writeFileSync(
+                    `${generatedFilePath}/locations/locationsOccurence.json`,
+                    JSON.stringify(locationsOccurence, null, 4)
                 )
             }
             console.log('end')
