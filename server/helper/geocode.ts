@@ -1,6 +1,7 @@
 import * as Geocoder from 'node-geocoder'
 import * as fs from 'fs'
 import * as bfj from 'bfj'
+const json = require('big-json');
 const doctors = require('../data/generated/doctors/doctors-min.json')
 
 // google location api
@@ -37,9 +38,10 @@ async function generateLocationCoordinate(location: string[]): Promise<Array<obj
     return generatedLocation
 }
 
-const doctorsSlice = doctors.slice(0, 11)
-// const doctorsSlice = doctors.slice(0, 50)
+// const doctorsSlice = doctors.slice(0, 1000)
+const doctorsSlice = doctors
 const doctorsWithGeo = doctorsSlice.map(async doctor => {
+// const doctorsWithGeo = doctors.map(async doctor => {
     let location;
     if (doctor.m && doctor.m.location) {
         location = doctor.m.location
@@ -62,12 +64,16 @@ const doctorsWithGeo = doctorsSlice.map(async doctor => {
 })
 
 Promise.all(doctorsWithGeo).then(res => {
+    
     const filePath = '/Users/florianzia/Documents/Projects/bam/server/data/generated/doctors/doctorsWithGeo.json'
 
-    const stream = bfj.streamify(res);
-    stream.on('data', chunk => {
-        fs.appendFileSync(filePath, chunk);
-    })
+    const stringifyStream = json.createStringifyStream({
+        body: res
+    });
+    stringifyStream.on('data', function(strChunk) {
+        fs.appendFileSync(filePath, strChunk);
+    });
+    
 
     // fs.writeFile(filePath, JSON.stringify(res), err => {
     //     if (err) {
