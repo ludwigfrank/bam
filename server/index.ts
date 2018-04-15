@@ -7,7 +7,7 @@ import * as fs from 'fs'
 import { nameParser, dateParser, cityParser } from "./parser"
 import './helper'
 import { summarizeLocationAsString } from "./helper"
-// import './helper/geocode'
+import './helper/geocode'
 
 const generatedFilePath = './server/data/generated'
 const csvFilePath = './server/data/doctors_by_key.csv'
@@ -22,9 +22,9 @@ const locationsOccurence = {}
 // Split the parsed file in multiple Json files to not exceed editor file size limit
 const MAX_NODES_PER_FILE = 1000
 // Generate new doctor json file from csv and write to files
-const WRITE_FILES_TO_JSON = true
+const WRITE_FILES_TO_JSON = false
 // Write the cities in a separate file
-const EXTRACT_AND_WRITE_CITIES = true
+const EXTRACT_AND_WRITE_CITIES = false
 
 if (WRITE_FILES_TO_JSON) {
     csv({

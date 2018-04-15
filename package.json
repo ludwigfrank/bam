@@ -5,6 +5,7 @@
     "start": "NODE_ENV=production node production-server/index.js"
   },
   "dependencies": {
+    "bfj": "^6.1.0",
     "csvtojson": "^1.1.9",
     "next": "latest",
     "node-geocoder": "^3.22.0",
