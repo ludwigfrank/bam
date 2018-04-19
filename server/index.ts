@@ -72,15 +72,7 @@ if (WRITE_FILES_TO_JSON) {
             }
 
             data.push(jsonObj)
-            if (data.length >= MAX_NODES_PER_FILE) {
-                fs.writeFileSync(
-                    `${generatedFilePath}/doctors/doctors-${index}.json`,
-                    JSON.stringify(data, null, 4)
-                )
 
-                index ++
-                data = []
-            }
         })
         .on('error', err => {console.log(err)})
         .on('done', (err) => {
@@ -97,6 +89,11 @@ if (WRITE_FILES_TO_JSON) {
                 fs.writeFileSync(
                     `${generatedFilePath}/locations/locationsOccurence.json`,
                     JSON.stringify(locationsOccurence, null, 4)
+                )
+
+                fs.writeFileSync(
+                    `${generatedFilePath}/doctors/doctors-min.json`,
+                    JSON.stringify(data)
                 )
             }
             console.log('end')
