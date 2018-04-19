@@ -5,21 +5,21 @@ const json = require('big-json');
 const doctors = require('../data/generated/doctors/doctors-min.json')
 
 // google location api
-// const geocoderOptions = {
-//     provider: 'google',
-//     httpAdapter: 'https',
-//     apiKey: 'AIzaSyD6owl91GMU8Rv7H4W2kdaM4KXV-yF9PJc',
-//     formatter: null,
-// }
-
-// here location api
 const geocoderOptions = {
-    provider: 'here',
+    provider: 'google',
     httpAdapter: 'https',
-    appId: 'f0T4kx8reJzVa2sYQ2JQ',
-    appCode: 'SH26N5KdRCMHp54likuN1Q',
+    apiKey: 'AIzaSyD6owl91GMU8Rv7H4W2kdaM4KXV-yF9PJc',
     formatter: null,
 }
+
+// here location api
+// const geocoderOptions = {
+//     provider: 'here',
+//     httpAdapter: 'https',
+//     appId: 'f0T4kx8reJzVa2sYQ2JQ',
+//     appCode: 'SH26N5KdRCMHp54likuN1Q',
+//     formatter: null,
+// }
 
 // Initialize geoCoder
 const geoCoder = Geocoder(geocoderOptions)
@@ -38,8 +38,8 @@ async function generateLocationCoordinate(location: string[]): Promise<Array<obj
     return generatedLocation
 }
 
-// const doctorsSlice = doctors.slice(0, 1000)
-const doctorsSlice = doctors
+const doctorsSlice = doctors.slice(0, 2000)
+// const doctorsSlice = doctors
 const doctorsWithGeo = doctorsSlice.map(async doctor => {
 // const doctorsWithGeo = doctors.map(async doctor => {
     let location;
@@ -60,12 +60,13 @@ const doctorsWithGeo = doctorsSlice.map(async doctor => {
     }).catch(err => {
         return doctor
     })
+    console.log('geo')
     return doctorWithGeo
 })
 
 Promise.all(doctorsWithGeo).then(res => {
     
-    const filePath = '/Users/florianzia/Documents/Projects/bam/server/data/generated/doctors/doctorsWithGeo.json'
+    const filePath = '/Users/florianzia/Documents/Projects/bam/server/data/generated/doctors/doctorsWithGeoGoogle.json'
 
     const stringifyStream = json.createStringifyStream({
         body: res
